@@ -218,10 +218,15 @@ static bool showRdsTime()
 
 bool checkRds()
 {
+  rx.getRdsStatus();
+  return(decodeRds());
+}
+
+// Decode the RDS group most recently read from the receiver
+bool decodeRds()
+{
   bool needRedraw = false;
   uint8_t mode = getRDSMode();
-
-  rx.getRdsStatus();
 
   if(rx.getRdsReceived() && rx.getRdsSync() && rx.getRdsSyncFound())
   {

@@ -122,6 +122,7 @@ static constexpr const lgfx::IFont* FONT_DIGITS  = &lgfx::fonts::Font7;  // 48px
 // USB modes
 #define USB_OFF        0 // USB is disabled
 #define USB_ADHOC      1 // Ad hoc serial protocol
+#define USB_WEBSERVER  2 // FM-DX Webserver tuner protocol
 
 // TCP modes
 #define TCP_OFF        0 // TCP control is disabled
@@ -254,6 +255,7 @@ const char *getRdsTime();
 uint16_t getRdsPiCode();
 void clearStationInfo();
 bool checkRds();
+bool decodeRds();
 bool identifyFrequency(uint32_t freq, bool periodic = false);
 
 // Network.cpp

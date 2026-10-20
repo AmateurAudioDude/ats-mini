@@ -15,6 +15,7 @@
 #include "Utils.h"
 #include "EIBI.h"
 #include "Remote.h"
+#include "FmdxMode.h"
 #include "BleMode.h"
 #include "TcpMode.h"
 #include "Splash.h"
@@ -822,10 +823,10 @@ void loop()
     elapsedRSSI = currentTime;
   }
 
-  // Periodically check received RDS information
+  // Periodically check received RDS information, read by the webserver protocol while connected
   if((currentTime - lastRDSCheck) > RDS_CHECK_TIME)
   {
-    needRedraw |= (currentMode == FM) && (snr >= 12) && checkRds();
+    needRedraw |= (currentMode == FM) && (snr >= 12) && !fmdxActive() && checkRds();
     lastRDSCheck = currentTime;
   }
 

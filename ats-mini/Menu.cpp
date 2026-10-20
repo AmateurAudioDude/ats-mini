@@ -335,7 +335,7 @@ int getTotalUILayouts() { return(ITEM_COUNT(uiLayoutDesc)); }
 
 uint8_t usbModeIdx = USB_OFF;
 const char *const usbModeDesc[] =
-{ "Off", "Ad hoc" };
+{ "Off", "Ad hoc", "Webserver" };
 
 int getTotalUSBModes() { return(ITEM_COUNT(usbModeDesc)); }
 

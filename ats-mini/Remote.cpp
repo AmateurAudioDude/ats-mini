@@ -7,6 +7,7 @@
 #include "Storage.h"
 #include "Remote.h"
 #include "ParserAdhoc.h"
+#include "FmdxMode.h"
 
 static RemoteState remoteSerialState;
 static bool serialDisconnectPending = false;
@@ -456,6 +457,8 @@ static InputEvent serialReadInput(uint8_t& byte)
 
 bool serialLoop(uint8_t usbMode)
 {
+  if(usbMode == USB_WEBSERVER) return fmdxLoop();
+  fmdxReset();
   if(usbMode == USB_OFF)
   {
     remoteSerialState = RemoteState{};
@@ -467,5 +470,6 @@ bool serialLoop(uint8_t usbMode)
 
 bool serialConsumeAbortPending(uint8_t usbMode)
 {
+  if(usbMode == USB_WEBSERVER) return fmdxAbortPending();
   return usbMode != USB_OFF && remoteConsumeAbortPending(&remoteSerialState, serialReadInput);
 }

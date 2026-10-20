@@ -137,6 +137,10 @@ class SI4735_fixed: public SI4735
       return(true);
     }
 
+    // Raw RDS group and bus address for the FM-DX Webserver protocol
+    const si47x_rds_status &getRdsStatusRaw() { return currentRdsStatus; }
+    int16_t getDeviceAddress() { return deviceAddress; }
+
   void seekStationProgress(void (*showFunc)(uint16_t f), bool (*stopSeeking)(), uint8_t up_down)
   {
     si47x_frequency freq;
