@@ -7,6 +7,7 @@
 #include "Menu.h"
 #include "Utils.h"
 #include "Storage.h"
+#include "Draw.h"
 #include "FmdxMode.h"
 #include <Wire.h>
 
@@ -665,6 +666,36 @@ static bool cmdScan(const char *args)
   return(false);
 }
 
+// Each seek step is reported, as PE5PVB firmware does while it searches
+static void seekProgress(uint16_t freq)
+{
+  currentFrequency = freqToHz(freq, currentMode);
+  drawScreen();
+  reportTune();
+}
+
+// C1 seeks down and C2 up, as is in PE5PVB firmware
+static bool cmdSeek(uint32_t value)
+{
+  if(value != 1 && value != 2) return(false);
+  Serial.printf("C%u\n", (unsigned)value);
+
+  // SSB has no hardware seek. Any webserver input or local control stops the seek.
+  if(!isSSB())
+  {
+    muteOn(MUTE_TEMP, true, !audioClamp);
+    clearStationInfo();
+    rdsClear();
+    rx.seekStationProgress(seekProgress, consumeAbortPending, value == 2 ? 1 : 0);
+    updateFrequency(freqToHz(rx.getFrequency(), currentMode), true);
+    identifyFrequency(currentFrequency);
+    muteOn(MUTE_TEMP, false, !audioClamp);
+  }
+
+  Serial.print("C0\n");
+  return(true);
+}
+
 static bool processCommand(const char *cmd)
 {
   const char *args = cmd[0] ? cmd + 1 : cmd;
@@ -691,6 +722,7 @@ static bool processCommand(const char *cmd)
     case 'B': return(cmdOutputMode(value));
     case 'Q': return(cmdSquelch(atol(args)));
     case 'S': return(cmdScan(args));
+    case 'C': return(cmdSeek(value));
     case 'I':
       if(value > 1000) return(false);
       qualityInterval = value;
